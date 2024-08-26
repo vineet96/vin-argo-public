@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: geico-appset-vineet
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/vineet96/vin-argo-private.git
+        revision: HEAD
+        directories:
+          - path: argo-applications/*
+  template:
+    metadata:
+      name: '{{path.basename}}'
+      namespace: default
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/vineet96/vin-argo-private.git
+        targetRevision: HEAD
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: default
+      syncPolicy:
+        automated:
+          prune: false
+          selfHeal: true
+        
